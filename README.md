@@ -5,4 +5,6 @@ User can play with 3D model of rubik's cube and solve their own cube by filling 
 * Two-phase method is developed by Herbert Kociemba. Average length of this solution is 21 moves.<br>
 The app also guides the user to the solution step by step by performing every step is simulator. App has other useful settings as well. (Screenshots below).<br><br>
 
-<img src = "Screenshots/mainmenu.png" height = "400" width = "200">   <img src = "Screenshots/simulator.png" height = "400" width = "200">   <img src = "Screenshots/fillcolors.png" height = "400" width = "200">   <img src = "Screenshots/solutions.png" height = "400" width = "200">   <img src = "Screenshots/solver.png" height = "400" width = "200">   <img src = "Screenshots/settings.png" height = "400" width = "200">
+<img src = "Screenshots/mainmenu.png" height = "420" width = "200">   <img src = "Screenshots/simulator.png" height = "420" width = "200">   <img src = "Screenshots/fillcolors.png" height = "420" width = "200">   <img src = "Screenshots/solutions.png" height = "420" width = "200">   <img src = "Screenshots/solver.png" height = "420" width = "200">   <img src = "Screenshots/settings.png" height = "420" width = "200">
+
+(Kociemba package belongs <a href = "https://github.com/Megalomatt/Kociemba/tree/Unity">here</a>. It's basically C# converted version of Kociemba's <a href = "http://kociemba.org/download.htm">Java package</a>.)
