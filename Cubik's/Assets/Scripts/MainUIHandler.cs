@@ -14,7 +14,6 @@ public class MainUIHandler : MonoBehaviour {
 	public GameObject[] cfopSol;
 
 	void Start() {
-		// PlayerPrefs.DeleteAll();
 		rl = cube.GetComponent<RotateLayers>();
 
 		int k = 0;
@@ -86,7 +85,7 @@ public class MainUIHandler : MonoBehaviour {
 	void InitializeSettings() {
 		crs.value = crs1.value = crs2.value = PlayerPrefs.GetFloat("cubeRotationSensitivity", 4);
 		lrs.value = lrs1.value = (int)(PlayerPrefs.GetFloat("layersRotationSensitivity", 0.4f) * 10);
-		sols.value = sols1.value = (int)(PlayerPrefs.GetFloat("solutionSpeed", 1f) * 3);
+		sols.value = sols1.value = (int)(PlayerPrefs.GetFloat("solutionSpeed", 0.3f) * 3);
 		scrs.value = scrs1.value = PlayerPrefs.GetFloat("scrambleSpeed", 10);
 		Camera.main.fieldOfView = PlayerPrefs.GetFloat("fieldOfView", 35);
 		fov.value = fov1.value = fov2.value = fov3.value = 75 - Camera.main.fieldOfView;
@@ -126,39 +125,31 @@ public class MainUIHandler : MonoBehaviour {
 			cube.transform.Rotate(new Vector3(0f, 1f, 0f) * Time.deltaTime * 30);
 		}
 
-		startText.color = Color.Lerp(Color.white, new Color(80f / 255, 80f / 255, 80f / 255), Mathf.PingPong(Time.time, 1));
+		startText.color = Color.Lerp(Color.white, new Color32(80, 80, 80, 255), Mathf.PingPong(Time.time, 1));
 		AndroidBackButton();
 		Timer();
 	}
 
+	public GameObject tools;
 	void AndroidBackButton() {
-		// if(Input.GetKeyDown(KeyCode.Escape)) {
-		// 	if(solutionsPanel.activeSelf) {
-		// 		solutionsPanel.SetActive(false);
-		// 	} else if(note.activeSelf) {
-		// 		note.SetActive(false);
-		// 	} else if(guideCanvas.activeSelf) {
-		// 		guideCanvas.SetActive(false);
-		// 		tools.SetActive(true);
-		// 		RotateLayersWithMouseDrag.canRotate = true;
-		// 		RotateCube.canRotate = true;
-		// 		startRotating = false;
-		// 		cube.transform.rotation = Quaternion.Euler(Vector3.zero);
-		// 	} else if(tools.activeSelf) {
-		// 		if(simulator) {
-		// 			SceneManager.LoadScene(0);
-		// 		} else {
-		// 			colorSelection.SetActive(true);
-		// 			tools.SetActive(false);
-		// 			RotateLayersWithMouseDrag.canRotate = false;
-		// 			RotateCube.canRotate = false;
-		// 		}
-		// 	}
-		// }
+		if(Input.GetKeyDown(KeyCode.Escape)) {
+			if(solutionsPanel.activeInHierarchy) {
+				HideSolutions();
+			} else if(note.activeInHierarchy) {
+				HideNote();
+			} else if(simulatorSettings.activeInHierarchy) {
+				SimulatorSettings();
+			} else if(fillColorsSettings.activeInHierarchy) {
+				FillColorsSettings();
+			} else if(guideSettings.activeInHierarchy) {
+				GuideSettings();
+			} else {
+				BackToMainMenu();
+			}
+		}
 	}
 
 	float elapsedTime = 0f;
-	public float timeSpeed = 1f;
 	public Text time;
 	bool runTimer = false, stopOnSolve = false, startOnRotating = false;
 	void Timer() {
@@ -173,29 +164,29 @@ public class MainUIHandler : MonoBehaviour {
 		}
 
 		if(runTimer) {
-			elapsedTime += Time.deltaTime * timeSpeed;
+			elapsedTime += Time.deltaTime;
 			time.text = TimeSpan.FromSeconds(elapsedTime).ToString("mm' : 'ss' : 'ff");
 		}
 	}
  
  	public GameObject resumeIcon;
 	public void ResumeTimer() {
+		runTimer = true;
 		resumeTimer.gameObject.SetActive(false);
 		resumeIcon.SetActive(false);
 		pauseTimer.gameObject.SetActive(true);
 		pauseIcon.SetActive(true);
-		runTimer = true;
 	}
 
 	public GameObject pauseIcon;
 	public void PauseTimer() {
+		runTimer = false;
+		startOnRotating = false;
+		stopOnSolve = false;
 		resumeTimer.gameObject.SetActive(true);
 		resumeIcon.SetActive(true);
 		pauseTimer.gameObject.SetActive(false);
 		pauseIcon.SetActive(false);
-		runTimer = false;
-		startOnRotating = false;
-		stopOnSolve = false;
 	}
 
 	public void ResetTimer() {
@@ -209,14 +200,21 @@ public class MainUIHandler : MonoBehaviour {
 	}
 
 	public void SimulatorSettings() {
-		simulatorSettings.SetActive(!simulatorSettings.activeSelf);
+		simulatorSettings.SetActive(!simulatorSettings.activeInHierarchy);
 	}
 
 	public void Scramble() {
 		PlayerPrefs.SetFloat("layersRSK", PlayerPrefs.GetFloat("scrambleSpeed", 10f));
-		string scramble = Tools.randomCube();
+		string scramble = Tools.randomCube().Substring(0, 25);
+
+		List<string> scrambleAsList = new List<string>();
 		for(int i = 0; i < scramble.Length; i++) {
-			rl.queue.Enqueue("" + scramble[i]);
+			scrambleAsList.Add(scramble[i].ToString());
+		}
+
+		rl.cfopSolver.Clean(ref scrambleAsList);
+		for(int i = 0; i < scrambleAsList.Count; i++) {
+			rl.queue.Enqueue(scrambleAsList[i]);
 		}
 
 		runTimer = false;
@@ -246,6 +244,9 @@ public class MainUIHandler : MonoBehaviour {
 		note.SetActive(false);
 		guide.SetActive(false);
 		guideSettings.SetActive(false);
+		ColorBlock cb = cfopButton.colors;
+		cb.disabledColor = new Color32(25, 25, 25, 255);
+		cfopButton.colors = advancedButton.colors = cb;
 
 		if(PlayerPrefs.GetInt("whiteCross", 0) == 1) {
 			int count = 0;
@@ -264,8 +265,10 @@ public class MainUIHandler : MonoBehaviour {
 
 			PlayerPrefs.SetFloat("layersRSK", temp);
 		}
+
 		advancedSolution = GetAdvancedSolution();
 		cfopSolution = rl.cfopSolver.Solve();
+
 
 		advSolutionText.GetComponent<Text>().text = advancedSolution;
 		
@@ -331,7 +334,7 @@ public class MainUIHandler : MonoBehaviour {
 	}
 
 	public void FillColorsSettings() {
-		fillColorsSettings.SetActive(!fillColorsSettings.activeSelf);
+		fillColorsSettings.SetActive(!fillColorsSettings.activeInHierarchy);
 	}
 
 	Color gray = new Color(0.4f, 0.4f, 0.4f);
@@ -342,6 +345,10 @@ public class MainUIHandler : MonoBehaviour {
 				if(color == gray) {
 					warning.SetActive(true);
 					StartCoroutine(ShowError());
+					return;
+				}
+				if(!rl.cfopSolver.colorsMap.ContainsKey(color)) {
+					print(color);
 					return;
 				}
 				rl.cfopSolver.c[i][j] = rl.cfopSolver.colorsMap[color];
@@ -375,7 +382,11 @@ public class MainUIHandler : MonoBehaviour {
 	List<string> currentSolution;
 	bool cfopMethod;
 	int index;
+	public Button cfopButton;
 	public void SolveCFOP() {
+		ColorBlock cb = cfopButton.colors;
+		cb.disabledColor = new Color32(42, 75, 38, 255);
+		cfopButton.colors = cb;
 		cfopMethod = true;
 		currentSolution = new List<string>();
 		foreach(List<string> temp in cfopSolution) {
@@ -390,7 +401,11 @@ public class MainUIHandler : MonoBehaviour {
 		CommonSteps();
 	}
 
+	public Button advancedButton;
 	public void SolveAdvanced() {
+		ColorBlock cb = advancedButton.colors;
+		cb.disabledColor = new Color32(42, 75, 38, 255);
+		advancedButton.colors = cb;
 		cfopMethod = false;
 		currentSolution = new List<string>(advancedSolution.Split(null));
 		currentSolution.RemoveAt(currentSolution.Count - 1);
@@ -399,7 +414,6 @@ public class MainUIHandler : MonoBehaviour {
 		CommonSteps();
 	}
 
-	public Button cfopButton, advancedButton;
 	public GameObject solutions, successText, start;
 	void CommonSteps() {
 		index = 0;
@@ -409,7 +423,7 @@ public class MainUIHandler : MonoBehaviour {
 		guide.SetActive(true);
 		guideHeader.SetActive(true);
 		guideSettings.SetActive(false);
-		PlayerPrefs.SetFloat("layersRSK", PlayerPrefs.GetFloat("solutionSpeed", 1f));
+		PlayerPrefs.SetFloat("layersRSK", PlayerPrefs.GetFloat("solutionSpeed", 0.3f));
 		
 		successText.gameObject.SetActive(false);
 		solutions.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 300, 0);
@@ -419,7 +433,7 @@ public class MainUIHandler : MonoBehaviour {
 	}
 
 	public void GuideSettings() {
-		guideSettings.SetActive(!guideSettings.activeSelf);
+		guideSettings.SetActive(!guideSettings.activeInHierarchy);
 	}
 
 	public void ShowSolutionsReadOnly() {
@@ -546,8 +560,8 @@ public class MainUIHandler : MonoBehaviour {
 	}
 
 	void ToggleTimer() {
-		timer.SetActive(!timer.activeSelf);
-		if(timer.activeSelf) {
+		timer.SetActive(!timer.activeInHierarchy);
+		if(timer.activeInHierarchy) {
 			PlayerPrefs.SetInt("showTimer", 1);
 		} else {
 			PlayerPrefs.SetInt("showTimer", 0);
@@ -572,5 +586,9 @@ public class MainUIHandler : MonoBehaviour {
 			PlayerPrefs.SetInt("whiteCross", wc.isOn ? 1 : 0);
 			flag = true;
 		}
+	}
+
+	public void GitHubLink() {
+		Application.OpenURL("https://github.com/manojbhatt101010/cubiks");
 	}
 }

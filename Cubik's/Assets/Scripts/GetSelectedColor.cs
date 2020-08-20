@@ -19,7 +19,6 @@ public class GetSelectedColor : MonoBehaviour {
 
 		GameObject current = EventSystem.current.currentSelectedGameObject;
 		current.transform.GetChild(0).gameObject.SetActive(true);
-		// print(current.GetComponent<Image>().color);
 		selectedColor = current.GetComponent<Button>().colors.normalColor;
 	}
 }

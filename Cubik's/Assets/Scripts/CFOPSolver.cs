@@ -6,6 +6,7 @@ public class CFOPSolver {
 	public char[][] c = new char[6][];
 	char[] up, down, front, back, left, right;
 	public Dictionary<Color, char> colorsMap = new Dictionary<Color, char>();
+	public Dictionary<char, Color> reverseColorMap = new Dictionary<char, Color>();
 	Dictionary<char[], char[]> leftLayer = new Dictionary<char[], char[]>();
 	Dictionary<char[], char[]> rightLayer = new Dictionary<char[], char[]>();
 	Dictionary<int, char[]> above = new Dictionary<int, char[]>();
@@ -13,14 +14,15 @@ public class CFOPSolver {
 	string[] f2lAlgorithms = new string[41];
 	string[] ollAlgorithms = new string[57];
 	string[] pllAlgorithms = new string[21];
+	char[] colorsChar = {'a', 'b', 'c', 'd', 'e', 'f'};
 	
 
 	public CFOPSolver() {
-		Color[] colors = {new Color(1f, 1f, 1f), new Color(1f, 1f, 0f), new Color(0f, 173/255.0f, 0f), new Color(0f, 43/255.0f, 1f), new Color(1f, 125/255.0f, 0f), new Color(1f, 0f, 0f)};
-		char[] colorsChar = {'a', 'b', 'c', 'd', 'e', 'f'};
+		Color[] colors = {new Color32(255, 255, 255, 255), new Color32(255, 255, 0, 255), new Color32(0, 173, 0, 255), new Color32(0, 85, 255, 255), new Color32(255, 125, 0, 255), new Color32(255, 20, 0, 255)};
 
 		for(int i = 0; i < 6; i++) {
 			colorsMap.Add(colors[i], colorsChar[i]);
+			reverseColorMap.Add(colorsChar[i], colors[i]);
 		}
 
 		for(int i = 0; i < 6; i++) {
@@ -88,6 +90,14 @@ public class CFOPSolver {
 			
 		RestoreCube(copy);
 		return finalSolution;
+	}
+
+	public void Fill() {
+		for(int i = 0; i < 6; i++) {
+			for(int j = 0; j < 9; j++) {
+				c[i][j] = colorsChar[i];
+			}
+		}
 	}
 
 	void AddSolution() {
@@ -727,7 +737,7 @@ public class CFOPSolver {
 		}
 	}
 
-	void Perform(string s) {
+	public void Perform(string s) {
 		string[] input = s.Split(null);
 		for(int i = 0; i < input.Length; i++) {
 			if(input[i] == "U") {
