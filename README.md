@@ -1,10 +1,11 @@
 # Cubik's
-### Cubik's is a 3 x 3 x 3 Rubik's cube simulator and solver for android. <br><br>
-User can play with 3D model of rubik's cube and solve their own cube by filling the colors as well. The app solved any scrambled cube under a second using two methods, **CFOP(Fridrich)** and **Kociemba's two-phase method.**<br>
+### Cubik's is a 3 x 3 x 3 Rubik's cube simulator, solver and timer for android. <br><br>
+User can play with 3D model of rubik's cube, solve their own cube by filling the colors and time their solves as well. The app can solve any scrambled cube within a second using two different solving methods, **CFOP(Fridrich)** and **Kociemba's two-phase method.**<br>
 * CFOP method is used by most of the speedcuber. It's a layer by layer method having 4 main steps - Cross, F2L, OLL, PLL. Average length of this solution is 70 moves.<br>
 * Two-phase method is developed by Herbert Kociemba. Average length of this solution is 21 moves.<br>
-The app also guides the user to the solution step by step by performing every step is simulator. App has other useful settings as well. (Screenshots below).<br><br>
+The app also guides the user to the solution step by step by performing every step is simulator. App has other useful settings as well.<br><br>
+The app also has a timer which generates random scrambles and curresponding cube maps so user can time their solves as well.<br><br>
 
-<img src = "Screenshots/mainmenu.png" height = "420" width = "200">   <img src = "Screenshots/simulator.png" height = "420" width = "200">   <img src = "Screenshots/fillcolors.png" height = "420" width = "200">   <img src = "Screenshots/solutions.png" height = "420" width = "200">   <img src = "Screenshots/solver.png" height = "420" width = "200">   <img src = "Screenshots/settings.png" height = "420" width = "200">
+<img src = "Screenshots/MainMenu.png" height = "420" width = "200">   <img src = "Screenshots/3DCube.png" height = "420" width = "200">   <img src = "Screenshots/FillColors.png" height = "420" width = "200">   <img src = "Screenshots/Solutions.png" height = "420" width = "200">   <img src = "Screenshots/Guide.png" height = "420" width = "200">   <img src = "Screenshots/Settings.png" height = "420" width = "200">   <img src = "Screenshots/Timer.png" height = "420" width = "200">
 
 (Kociemba package belongs <a href = "https://github.com/Megalomatt/Kociemba/tree/Unity">here</a>. It's basically C# converted version of Kociemba's <a href = "http://kociemba.org/download.htm">Java package</a>.)
