@@ -5,6 +5,7 @@ User can play with 3D model of rubik's cube, solve their own cube by filling the
 * Two-phase method is developed by Herbert Kociemba. Average length of this solution is 21 moves.<br>
 The app also guides the user to the solution step by step by performing every step is simulator. App has other useful settings as well.<br><br>
 The app also has a timer which generates random scrambles and curresponding cube maps so user can time their solves as well.<br><br>
+**Try it on google play:** https://play.google.com/store/apps/details?id=com.manojbhatt.cubiks  <br><br>
 
 <img src = "Screenshots/MainMenu.png" height = "420" width = "200">   <img src = "Screenshots/3DCube.png" height = "420" width = "200">   <img src = "Screenshots/FillColors.png" height = "420" width = "200">   <img src = "Screenshots/Solutions.png" height = "420" width = "200">   <img src = "Screenshots/Guide.png" height = "420" width = "200">   <img src = "Screenshots/Settings.png" height = "420" width = "200">   <img src = "Screenshots/Timer.png" height = "420" width = "200">
 
